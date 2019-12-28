@@ -33,7 +33,11 @@
 						</div>
 						<div class="col-8 col-7-large col-12-medium">
 							<header>
-								<h1>Hi. I'm <strong>Tyge Davis</strong>.</h1>
+								<h1>Hi. I'm <strong><span     
+									class="txt-rotate"
+									data-period="2000"
+									data-rotate='[ "Tyge Davis.", "a Web Developer.", "a husband.", "a Spanish speaker." ]'
+									></span></strong></h1>
 							</header>
 							<p>I am currently a student at Lambda School studying full stack web development full time. At Lambda School we don't just earn to code, we learn to learn. I am looking to finish the program by June 2020.</p>
 							<a href="#work" class="button large scrolly">Learn about what I can do</a>
@@ -71,7 +75,13 @@
 						<div class="col-4 col-6-medium col-12-small">
 							<section class="box style1">
 								<span class="fab fa-css3-alt fa-10x"></span>
-								<h3>CSS/LESS</h3>
+								<h3>CSS</h3>
+							</section>
+						</div>
+						<div class="col-4 col-6-medium col-12-small">
+							<section class="box style1">
+								<span class="fab fa-less fa-10x"></span>
+								<h3>LESS</h3>
 							</section>
 						</div>
 						<div class="col-4 col-6-medium col-12-small">
@@ -104,6 +114,13 @@
 					<div class="row">
 						<div class="col-4 col-6-medium col-12-small">
 							<article class="box style2">
+								<a href="#" class="image featured"><img src="images/tetrimono.png" alt="" /></a>
+								<h3><a href="https://tetrisgame.tygedavis.now.sh/" target="_blank">React Tetris</a></h3>
+								<p>A Tetris game built using React. Built using a Youtube tutorial to help broaden my understanding of React and built in my free time.</p>
+							</article>
+						</div>
+						<div class="col-4 col-6-medium col-12-small">
+							<article class="box style2">
 								<a href="#" class="image featured"target="_blank"><img src="images/chores.jpg" alt="" /></a>
 								<h3><a href="https://github.com/Build-Week-Home-Chore-Tracker" target="_blank">Home Chore Tracker</a></h3>
 								<p>This project helps parents and children enjoy chores. I worked directly on the UI team. Built using HTML and LESS.</p>
@@ -133,13 +150,6 @@
 									<li>Focus on components in the DOM</li>
 									<li>Works with event listeners</li>
 								</ul>
-							</article>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/tetrimono.png" alt="" /></a>
-								<h3><a href="https://tetrisgame.tygedavis.now.sh/" target="_blank">Tetris</a></h3>
-								<p>A Tetris game built using React. Built to help broaden my understanding of React and built in my free time.</p>
 							</article>
 						</div>
 						<!-- <div class="col-4 col-6-medium col-12-small">
@@ -213,17 +223,12 @@
 								<li><a href="https://www.linkedin.com/in/tyge-davis-02a55718a/" class="icon brands fa-linkedin-in" target="_blank"><span class="label">LinkedIn</span></a></li>
 								<li><a href="https://github.com/tygedavis" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
 								<!--
-								<li><a href="#" class="icon solid fa-rss"><span>RSS</span></a></li>
 								<li><a href="#" class="icon brands fa-instagram"><span>Instagram</span></a></li>
-								<li><a href="#" class="icon brands fa-foursquare"><span>Foursquare</span></a></li>
-								<li><a href="#" class="icon brands fa-skype"><span>Skype</span></a></li>
-								<li><a href="#" class="icon brands fa-soundcloud"><span>Soundcloud</span></a></li>
 								<li><a href="#" class="icon brands fa-youtube"><span>YouTube</span></a></li>
-								<li><a href="#" class="icon brands fa-blogger"><span>Blogger</span></a></li>
-								<li><a href="#" class="icon brands fa-flickr"><span>Flickr</span></a></li>
-								<li><a href="#" class="icon brands fa-vimeo"><span>Vimeo</span></a></li>
 								-->
 							</ul>
+							<h4>Or email me at</h4>
+							<p>tyge.davis@gmail.com</p>
 							<hr />
 						</div>
 					</div>
@@ -242,6 +247,64 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script>
+				var TxtRotate = function(el, toRotate, period) {
+					this.toRotate = toRotate;
+					this.el = el;
+					this.loopNum = 0;
+					this.period = parseInt(period, 10) || 500;
+					this.txt = '';
+					this.tick();
+					this.isDeleting = false;
+				};
+
+				TxtRotate.prototype.tick = function() {
+					var i = this.loopNum % this.toRotate.length;
+					var fullTxt = this.toRotate[i];
+
+					if (this.isDeleting) {
+						this.txt = fullTxt.substring(0, this.txt.length - 1);
+					} else {
+						this.txt = fullTxt.substring(0, this.txt.length + 1);
+					}
+
+					this.el.innerHTML = '<span class="wrap">'+this.txt+'</span>';
+
+					var that = this;
+					var delta = 300 - Math.random() * 100;
+
+					if (this.isDeleting) { delta /= 2; }
+
+					if (!this.isDeleting && this.txt === fullTxt) {
+						delta = this.period;
+						this.isDeleting = true;
+					} else if (this.isDeleting && this.txt === '') {
+						this.isDeleting = false;
+						this.loopNum++;
+						delta = 500;
+					}
+
+					setTimeout(function() {
+						that.tick();
+					}, delta);
+				};
+
+				window.onload = function() {
+					var elements = document.getElementsByClassName('txt-rotate');
+					for (var i=0; i<elements.length; i++) {
+						var toRotate = elements[i].getAttribute('data-rotate');
+						var period = elements[i].getAttribute('data-period');
+						if (toRotate) {
+							new TxtRotate(elements[i], JSON.parse(toRotate), period);
+						}
+					}
+					// INJECT CSS
+					var css = document.createElement("style");
+					css.type = "text/css";
+					css.innerHTML = ".txt-rotate > .wrap { border-right: 0.08em solid #666 }";
+					document.body.appendChild(css);
+				};
+			</script>
 
 	</body>
 </html>
